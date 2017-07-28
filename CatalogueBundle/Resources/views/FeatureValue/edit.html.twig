@@ -1,0 +1,79 @@
+{% extends twig_global.getParameter('extended_layout_admin') ? twig_global.getParameter('extended_layout_admin') : 'AdminBundle:Base:layout.html.twig' %}
+{% form_theme edit_form 'AdminBundle:Form:fields.html.twig' %}
+
+{% block section %}features{% endblock %}
+
+{% block content %}
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ "edit" | trans }} {{ entity.name }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "catalogue" | trans }}</a></li>
+        <li><a href="{{ path('catalogue_feature_index') }}">{{ "feature.plural" | trans }}</a></li>
+        <li><a href="{{ path('catalogue_feature_show', { id: feature.id }) }}">{{ feature.name }}</a></li>
+        <li><a href="{{ path('catalogue_featurevalue_index', { featureId: feature.id }) }}">{{ "value.plural" | trans }}</a></li>
+        <li><a href="{{ path('catalogue_featurevalue_show', { featureId: feature.id, id: entity.id }) }}">{{ entity.name }}</a></li>
+        <li><a href="{{ path('catalogue_featurevalue_edit', { featureId: feature.id, id: entity.id }) }}">{{ "edit" | trans }} </a></li>
+      </ol>
+    </section>
+      
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            
+            {% include 'CoreBundle:Base:alert.messages.html.twig' %}
+            
+            <div class="box box-info">
+                <!-- form start -->
+                {{ form_start(edit_form, {
+                                    'action': path('catalogue_featurevalue_update', { featureId: feature.id, id: entity.id }), 
+                                    'method': 'post', 
+                                    'attr': {'class': 'form-horizontal form-row-seperated'}
+                                    }) }}
+                     <div class="box-body">
+                        {{ include('CatalogueBundle:FeatureValue:_form.html.twig', { form: edit_form }) }}
+                    </div><!-- /.box-body -->
+                    <div class="box-footer">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-10">
+                           <button type="submit" class="btn btn-primary btn-flat"><i class="ion-checkmark"></i> {{ "save" | trans }}</button>
+                            <a href="{{ path('catalogue_featurevalue_show', { featureId: feature.id, id: entity.id }) }}" class="btn btn-default btn-flat">{{ "cancel" | trans }}</a>
+                            <button type="submit" class="btn btn-danger btn-flat pull-right" id="delete-btn">{{ "delete" | trans }}</button>
+                        </div>    
+                    </div>
+                {{ form_end(edit_form) }}       
+                <!-- form start -->
+                {{ form_start(delete_form, {
+                                    'action': path('catalogue_featurevalue_delete', { featureId: feature.id, id: entity.id }), 
+                                    'method': 'post', 
+                                    'attr': {'id': 'delete-entity'}
+                                    }) }}
+                    {{ form_widget(delete_form) }}
+                {{ form_end(delete_form) }}    
+            </div>
+        </div>
+      </div>
+    </section>
+                    
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        jQuery(document).ready(function() {
+            $('#delete-btn').on('click', function(e) {
+                e.preventDefault();
+
+                if (confirm('{{ "are.you.sure" | trans }}')) {
+                    $('#delete-entity').submit();
+                }
+            });
+        });
+    </script>
+{% endblock %}

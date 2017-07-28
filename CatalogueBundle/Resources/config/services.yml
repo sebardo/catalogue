@@ -1,0 +1,15 @@
+services:
+    dynamic_relation_map_catalogue.listener.doctrine_event_listener:
+        class: "CatalogueBundle\\EventListener\\DynamicRelationSubscriber"
+        arguments: ["%core.dynamic_discriminator_map.mapping%"]
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata }
+    
+    catalogue_extension:
+        class: CatalogueBundle\Twig\CatalogueExtension
+        arguments:
+            - { parameters: %core% }
+        calls:
+            - [setContainer, ["@service_container"] ]
+        tags:
+            - { name: twig.extension }

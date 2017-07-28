@@ -1,0 +1,53 @@
+{% extends twig_global.getParameter('extended_layout_admin') ? twig_global.getParameter('extended_layout_admin') : 'AdminBundle:Base:layout.html.twig' %}
+{% form_theme form 'AdminBundle:Form:fields.html.twig' %}
+
+{% block section %}attributes{% endblock %}
+
+{% block content %}
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{ "new.value.attribute" | trans({ '%attribute%': attribute.name }) }}
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{{ path('admin_default_index') }}"> <i class="ion-home"></i>  {{ "home" | trans }}</a></li>
+        <li><a href="javascript:">{{ "catalogue" | trans }}</a></li>
+        <li><a href="{{ path('catalogue_attribute_index') }}">{{ "attribute.plural" | trans }}</a></li>
+        <li><a href="{{ path('catalogue_attribute_show', { id: attribute.id }) }}">{{ attribute.name }}</a></li>
+        <li><a href="{{ path('catalogue_attributevalue_index', { attributeId: attribute.id }) }}">{{ "value.plural" | trans }}</a></li>
+        <li><a href="{{ path('catalogue_attributevalue_new', { attributeId: attribute.id }) }}">{{ "new.singular" | trans }}</a></li>
+      </ol>
+    </section>
+      
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-info">
+                <!-- form start -->
+                <form action="{{ path('catalogue_attributevalue_create', { attributeId: attribute.id }) }}" method="post" {{ form_enctype(form) }} class="form-horizontal form-row-seperated">
+                    <div class="box-body">
+                        {{ include('CatalogueBundle:AttributeValue:_form.html.twig', { form: form }) }}
+                    </div><!-- /.box-body -->
+                    <div class="box-footer">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-10">
+                            <button class="btn btn-primary btn-flat" type="submit" ><i class="ion-checkmark"></i> {{ "save" | trans }}</button>
+                            <a class="btn btn-default btn-flat" href="{{ path('catalogue_attributevalue_index', { attributeId: attribute.id }) }}">{{ "cancel" | trans }}</a>
+                        </div>
+                    </div><!-- /.box-footer -->
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        jQuery(document).ready(function() {
+        });
+    </script>
+{% endblock %}

@@ -8,8 +8,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Timestampable;
-use CoreExtraBundle\Entity\Video;
 use CoreBundle\Entity\BaseActor;
+use PaymentBundle\Entity\ProductTrait;
+use CoreBundle\Entity\MetasableTrait;
 
 /**
  * Product Entity class
@@ -20,6 +21,9 @@ use CoreBundle\Entity\BaseActor;
  */
 class Product extends Timestampable
 {
+    use MetasableTrait;
+    use ProductTrait;
+    
     const PRICE_TYPE_FIXED = 0;
     const PRICE_TYPE_PERCENT = 1;
     
@@ -62,92 +66,6 @@ class Product extends Timestampable
      * @ORM\Column(length=255, unique=false)
      */
     private $slug;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="init_price", type="float", nullable=true)
-     */
-    private $initPrice;
-    
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="price", type="float")
-     * @Assert\NotBlank
-     */
-    private $price;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="price_type", type="boolean")
-     */
-    private $priceType;
-    
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="discount", type="integer", nullable=true)
-     */
-    private $discount;
-    
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="discounted_price", type="float", nullable=true)
-     */
-    private $discountType;
-    
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="stock", type="integer")
-     * @Assert\NotBlank
-     */
-    private $stock;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="weight", type="float", nullable=true)
-     */
-    private $weight;
-    
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="store_pickup", type="boolean")
-     */
-    private $storePickup;
-    
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="reference", type="string", length=255, nullable=true)
-     */
-    private $reference;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="meta_title", type="string", length=255, nullable=true)
-     */
-    private $metaTitle;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="meta_description", type="text", nullable=true)
-     */
-    private $metaDescription;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="meta_tags", type="string", length=255, nullable=true)
-     */
-    private $metaTags;
 
     /**
      * Dynamic
@@ -211,16 +129,6 @@ class Product extends Timestampable
     private $images;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="Product")
-     * @ORM\JoinTable(name="catalogue_related_products",
-     *                      joinColumns={@ORM\JoinColumn(name="product_id", referencedColumnName="id")},
-     *                      inverseJoinColumns={@ORM\JoinColumn(name="related_product_id", referencedColumnName="id")})
-     */
-    private $relatedProducts;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(name="active", type="boolean")
@@ -241,29 +149,6 @@ class Product extends Timestampable
      */
     private $highlighted;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="freeTransport", type="boolean")
-     */
-    private $freeTransport;
-    
-    private $publishDateRange;
-    
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="publish_date_from", type="datetime", nullable=true)
-     */
-    private $publishDateFrom;
-    
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="publish_date_to", type="datetime", nullable=true)
-     */
-    private $publishDateTo;
-    
     /**
      * @var \DateTime
      *
@@ -289,6 +174,8 @@ class Product extends Timestampable
         $this->relatedProducts = new ArrayCollection();
         $this->stats = new ArrayCollection();
         $this->active = false;
+        $this->available = false;
+        $this->highlighted = false;
         $this->freeTransport = false;
     }
 
@@ -393,302 +280,6 @@ class Product extends Timestampable
     public function getSlug()
     {
         return $this->slug;
-    }
-
-    /**
-     * Get initPrice
-     *
-     * @return float
-     */
-    public function getInitPrice()
-    {
-        $initPrice = $this->initPrice;
-
-        return $initPrice;
-    }
-
-    /**
-     * Set initPrice
-     *
-     * @param float $initPrice
-     *
-     * @return Product
-     */
-    public function setInitPrice($initPrice)
-    {
-        $this->initPrice = $initPrice;
-
-        return $this;
-    }
-    
-    /**
-     * Get price
-     *
-     * @return float
-     */
-    public function getPrice()
-    {
-        $price = $this->price;
-
-        return $price;
-    }
-
-    /**
-     * Set price
-     *
-     * @param float $price
-     *
-     * @return Product
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-    
-    /**
-     * Get priceType
-     *
-     * @return float
-     */
-    public function getPriceType()
-    {
-        $priceType = $this->priceType;
-
-        return $priceType;
-    }
-
-    /**
-     * Set priceType
-     *
-     * @param float $priceType
-     *
-     * @return Product
-     */
-    public function setPriceType($priceType)
-    {
-        $this->priceType = $priceType;
-
-        return $this;
-    }
-
-    /**
-     * Get discount
-     *
-     * @return integer
-     */
-    public function getDiscount()
-    {
-        return $this->discount;
-    }
-
-    /**
-     * Set discount
-     *
-     * @param integer $discount
-     *
-     * @return Product
-     */
-    public function setDiscount($discount)
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-    
-    /**
-     * Get discountType
-     *
-     * @return integer
-     */
-    public function getDiscountType()
-    {
-        return $this->discountType;
-    }
-
-    /**
-     * Set $discountType
-     *
-     * @param integer $discountType
-     *
-     * @return Product
-     */
-    public function setDiscountType($discountType)
-    {
-        $this->discountType = $discountType;
-
-        return $this;
-    }
-    
-    /**
-     * Get stock
-     *
-     * @return integer
-     */
-    public function getStock()
-    {
-        return $this->stock;
-    }
-
-    /**
-     * Set stock
-     *
-     * @param integer $stock
-     *
-     * @return Product
-     */
-    public function setStock($stock)
-    {
-        $this->stock = $stock;
-
-        return $this;
-    }
-    
-    /**
-     * Get weight
-     *
-     * @return float
-     */
-    public function getWeight()
-    {
-        return $this->weight;
-    }
-
-    /**
-     * Set weight
-     *
-     * @param float $weight
-     *
-     * @return Product
-     */
-    public function setWeight($weight)
-    {
-        $this->weight = $weight;
-
-        return $this;
-    }
-    
-    /**
-     * Get storePickup
-     *
-     * @return float
-     */
-    public function getStorePickup()
-    {
-        return $this->storePickup;
-    }
-
-    /**
-     * Set storePickup
-     *
-     * @param float $storePickup
-     *
-     * @return Product
-     */
-    public function setStorePickup($storePickup)
-    {
-        $this->storePickup = $storePickup;
-
-        return $this;
-    }    
-    
-    /**
-     * Get reference
-     *
-     * @return string
-     */
-    public function getReference()
-    {
-        return $this->reference;
-    }
-
-    /**
-     * Set reference
-     *
-     * @param string $reference
-     *
-     * @return Product
-     */
-    public function setReference($reference)
-    {
-        $this->reference = $reference;
-
-        return $this;
-    }
-
-    
-
-    /**
-     * Get metaTitle
-     *
-     * @return string
-     */
-    public function getMetaTitle()
-    {
-        return $this->metaTitle;
-    }
-
-    /**
-     * Set metaTitle
-     *
-     * @param string $metaTitle
-     *
-     * @return Product
-     */
-    public function setMetaTitle($metaTitle)
-    {
-        $this->metaTitle = $metaTitle;
-
-        return $this;
-    }
-
-    /**
-     * Get metaDescription
-     *
-     * @return string
-     */
-    public function getMetaDescription()
-    {
-        return $this->metaDescription;
-    }
-
-    /**
-     * Set metaDescription
-     *
-     * @param string $metaDescription
-     *
-     * @return Product
-     */
-    public function setMetaDescription($metaDescription)
-    {
-        $this->metaDescription = $metaDescription;
-
-        return $this;
-    }
-
-    /**
-     * Get metaTags
-     *
-     * @return string
-     */
-    public function getMetaTags()
-    {
-        return $this->metaTags;
-    }
-
-    /**
-     * Set metaTags
-     *
-     * @param string $metaTags
-     *
-     * @return Product
-     */
-    public function setMetaTags($metaTags)
-    {
-        $this->metaTags = $metaTags;
-
-        return $this;
     }
 
     /**
@@ -891,40 +482,6 @@ class Product extends Timestampable
     }
 
     /**
-     * Add related Product
-     *
-     * @param Product $relatedProduct
-     *
-     * @return Product
-     */
-    public function addRelatedProduct(Product $relatedProduct)
-    {
-        $this->relatedProducts->add($relatedProduct);
-
-        return $this;
-    }
-
-    /**
-     * Remove relatedProduct
-     *
-     * @param Product $relatedProduct
-     */
-    public function removeRelatedProduct(Product $relatedProduct)
-    {
-        $this->relatedProducts->removeElement($relatedProduct);
-    }
-
-    /**
-     * Get relatedProducts
-     *
-     * @return ArrayCollection
-     */
-    public function getRelatedProducts()
-    {
-        return $this->relatedProducts;
-    }
-    
-    /**
      * Is active?
      *
      * @return boolean
@@ -994,88 +551,6 @@ class Product extends Timestampable
         $this->highlighted = $highlighted;
 
         return $this;
-    }
-
-    /**
-     * Is free Transport?
-     *
-     * @return boolean
-     */
-    public function isFreeTransport()
-    {
-        return $this->freeTransport;
-    }
-
-    /**
-     * Set Free Transport
-     *
-     * @param boolean $freeTransport
-     *
-     * @return Product
-     */
-    public function setFreeTransport($freeTransport)
-    {
-        $this->freeTransport = $freeTransport;
-
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getPublishDateRange()
-    {
-        $from = new \DateTime();
-        $to = clone $from;
-//        $dateString = $from->format('d/m/Y').' '.$to->format('d/m/Y');
-        $dateString = '';
-        if($this->publishDateFrom != '' && $this->publishDateTo != '')
-        $dateString = $this->publishDateFrom->format('d/m/Y').' '.$this->publishDateTo->format('d/m/Y');
-        return $dateString;
-    }
-
-    /**
-     * @param string $publishDateRange
-     */
-    public function setPublishDateRange($publishDateRange)
-    {
-        if($publishDateRange != ''){
-            $arr = explode(' ', $publishDateRange);
-            $this->publishDateFrom = \DateTime::createFromFormat('d/m/Y', $arr[0]);
-            $this->publishDateTo = \DateTime::createFromFormat('d/m/Y', $arr[1]);
-        }
-    }
-    
-    /**
-     * @return \DateTime
-     */
-    public function getPublishDateFrom()
-    {
-        return $this->publishDateFrom;
-    }
-
-    /**
-     * @param \DateTime $publishDateFrom
-     */
-    public function setPublishDateFrom($publishDateFrom)
-    {
-        $this->publishDateFrom = $publishDateFrom;
-    }
-    
-    /**
-     * @return \DateTime
-     */
-    public function getPublishDateTo()
-    {
-        return $this->publishDateTo;
-    }
-
-    /**
-     * @param \DateTime $publishDateTo
-     */
-    public function setPublishDateTo($publishDateTo)
-    {
-        $this->publishDateTo = $publishDateTo;
     }
     
     /**

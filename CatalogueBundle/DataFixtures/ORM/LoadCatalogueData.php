@@ -8,12 +8,28 @@ use CoreBundle\DataFixtures\SqlScriptFixture;
  */
 class LoadCatalogueData extends SqlScriptFixture
 {
-
+    /**
+     * There two kind of fixtures
+     * Bundle fixtures: all info bundle needed
+     * Dev fixtures: info for testing porpouse
+     */
     public function createFixtures()
     {
         
-
-        $this->runSqlScript('Translation.sql');
+        /**
+         * Bundle fixtures
+         */
+        if($this->container->getParameter('core.fixture_bundle')){
+            $this->runSqlScript('Translation.sql');
+        }
+        
+        /**
+         * Dev fixtures
+         */
+        if($this->container->getParameter('core.fixtures_dev')){
+            
+        }
+        
 
         
     }

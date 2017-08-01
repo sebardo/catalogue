@@ -19,14 +19,14 @@ class LoadCatalogueData extends SqlScriptFixture
         /**
          * Bundle fixtures
          */
-        if($this->container->getParameter('core.fixture_bundle')){
+        if($this->container->getParameter('core.fixture_bundle_catalogue')){
             $this->runSqlScript('Translation.sql');
         }
         
         /**
          * Dev fixtures
          */
-        if($this->container->getParameter('core.fixtures_dev')){
+        if($this->container->getParameter('core.fixtures_dev_catalogue')){
             
         }
         

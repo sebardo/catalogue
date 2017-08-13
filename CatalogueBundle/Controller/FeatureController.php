@@ -116,7 +116,7 @@ class FeatureController extends Controller
             $em = $this->getDoctrine()->getManager();
 
             $category = $em->getRepository('CatalogueBundle:Category')->
-                find($this->getRequest()->query->get('category'));
+                find($request->query->get('category'));
 
             $entity->setCategory($category);
         }

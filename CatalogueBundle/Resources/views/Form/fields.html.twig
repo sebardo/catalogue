@@ -1,0 +1,52 @@
+{% extends 'form_div_layout.html.twig' %}
+
+ 
+
+{% block checkbox_widget %}
+{% spaceless %}
+    
+    {% if type is defined and type == 'color'%}
+        {% set style = get_input_color_style(value) %}
+        <a style="{{style}}" type="button" class="btn color" data-toggle="tooltip" data-placement="top" title="{{ label | trans }}">
+            <input class="{% if value == 'negro'%}minimal-white{%else%}minimal-trans{% endif %}" type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        </a>
+    {% elseif type is defined and type == 'tamano'%}
+        <div class="checkbox {{ div_class|default }}">
+            <label >
+                <i class="sprite {{ value }}"></i>
+                <span>{{ label | trans }}</span> 
+                <input class="minimal"  type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            </label>
+        </div>
+     {% elseif type is defined and (type == 'pantalla' or type == 'montura' or type == 'genero' or type == 'cara' )%}
+        <div class="checkbox {{ div_class|default }}">
+            <label >
+                <i class="sprite {{ value }}"></i>
+                <span>{{ label | trans }}</span> 
+                <input class="minimal"  type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            </label>
+        </div>
+      {% elseif type is defined and (type == 'material' or type == 'tipo') %}
+        <div class="checkbox {{ div_class|default }}">
+            <label >
+                <span>{{ label | trans }}</span> 
+                <input class="minimal" type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            </label>
+        </div>
+     {% elseif type is defined and (type == 'category') %}
+        <div class="checkbox {{ div_class|default }}">
+            <label >
+                <span>{{ label | trans }}</span> 
+                <input class="minimal" type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            </label>
+        </div>
+     {% else%}
+        <div class="checkbox {{ div_class|default }}">
+            <label >
+                <span>{{ label | trans }}</span> 
+                <input class="minimal" type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            </label>
+        </div>
+     {% endif %}
+{% endspaceless %}
+{% endblock checkbox_widget %}

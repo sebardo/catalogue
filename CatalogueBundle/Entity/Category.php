@@ -207,6 +207,7 @@ class Category extends Timestampable
     public function setName($name)
     {
         $this->name = $name;
+        if($this->getMetaTitle() == '') $this->setMetaTitle($name);
 
         return $this;
     }
@@ -255,7 +256,8 @@ class Category extends Timestampable
     public function setDescription($description)
     {
         $this->description = $description;
-
+        if($this->getMetaDescription() == '') $this->setMetaDescription($description);
+        
         return $this;
     }
 

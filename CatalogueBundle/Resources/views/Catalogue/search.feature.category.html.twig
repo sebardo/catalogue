@@ -1,0 +1,17 @@
+{% for feature in features %}
+    
+<div>
+    <div class="sort box {{feature.slug }}-box">
+        <div class="title-search">
+           {{feature.name}} 
+        </div>
+        <div class="{% if feature.slug == 'color' %}container-colors{% else %}checkbox-search{% endif %} {{feature.slug }}">
+            {%- for child in form[feature.slug] %}
+                    {{ form_widget(child, { type: feature.slug} ) }}
+            {% endfor -%}
+        </div>
+    </div>
+</div>
+            
+  
+{% endfor %}    

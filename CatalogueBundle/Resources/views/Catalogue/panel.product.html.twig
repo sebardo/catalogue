@@ -1,0 +1,41 @@
+<div class="items {% if product.categorySlug is defined %}{{product.categorySlug}}{% endif %} {% if product.category is defined %}{{product.category.slug}}{% endif %} col-md-{% if panel_size is defined %}{{panel_size}}{%else%}3{%endif%} col-xs-{% if panel_size_xs is defined %}{{panel_size_xs}}{%else%}12{%endif%} {% if profile is defined %}profile-panel{%endif%}  {% if multiple is defined and loop.index % multiple == 0 %}last{% endif %} ">
+
+    <div class="panel panel-default">
+        
+        <div class="panel-heading">
+            {% set path = get_product_image(product) %}
+            {#% if product.imagePaths is defined %}
+                {% set image = get_first_image(product.imagePaths) %}
+                {% set image = get_thumb_image(image, '260') %}
+                {% if image != ''%} {% set path = '/uploads/images/product/'~product.id~'/thumbnail/'~image %} {% endif %}
+            {% else %}
+                {% if product.imagePath is defined %}
+                    {% set image = get_thumb_image(product.imagePath, '260') %}
+                    {% if image != ''%} {% set path = '/uploads/images/product/'~product.id~'/thumbnail/'~image %} {% endif %}
+                {% else %}
+                    {% if product.images|length > 0 %}
+                        {% set image = get_thumb_image(product.images.first.path, '260') %}
+                        {% if image != ''%} {% set path = '/uploads/images/product/'~product.id~'/thumbnail/'~image %} {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endif%#}
+            <a href="{{ path('payment_checkout_product', { 'slug': product.slug })}}"><img width="100%" src="{{ path }}"/></a>
+        </div>
+        <div class="panel-body">
+            <div class="price">
+                <span class="current-amount">{{ product.price | prices(product.priceType) }}</span>
+            </div>
+            <div class="author-panel">
+                <a href="{{ path('payment_checkout_product', { 'slug': product.slug })}}"><h4 class="panel-product-name">{% if search is defined and search !=''%}{{ product.name  | search_wrap(search) }}{% else %}{{ product.name }}{% endif %}</h4></a>
+                {% if product.brand.name is defined %}<a href="{#{ path('optisoop_front_product_brand', { 'slug': product.brand.slug })}#}"><span class="brand">{% if search is defined and search !=''%}{{ product.brand.name  | search_wrap(search) }}{% else %}{{product.brand.name}}{% endif %}</span></a><br>{% endif%}
+                {% if product.brandId is defined %}<a href="{#{ path('optisoop_front_product_brand', { 'slug': product.brandSlug })}#}"><span class="brand">{{product.brandName}}</span></a><br>{% endif%}
+            </div>
+           
+            <a class="btn btn-large purple-black" href="{{ path('payment_checkout_product', { 'slug': product.slug })}}">
+               {{ (product.priceType) ? 'purchase' | trans : 'buy' | trans }}
+            </a>
+
+        </div>
+    </div>
+</div>          
+{% if multiple is defined and loop.index % multiple == 0 %}<div style="clear: both"></div>{% endif %}

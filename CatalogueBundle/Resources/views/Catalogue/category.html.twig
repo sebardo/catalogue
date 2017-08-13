@@ -1,0 +1,358 @@
+{% extends twig_global.getParameter('extended_layout') ? twig_global.getParameter('extended_layout') : 'CoreBundle:Base:base.layout.html.twig' %}
+
+{% block stylesheets %}
+    {{parent()}}
+    <!-- Ion Slider -->
+    <!-- ion slider Nice -->
+    {% stylesheets
+        'bundles/admin/plugins/ionslider/ion.rangeSlider.css' 
+        'bundles/admin/plugins/ionslider/ion.rangeSlider.skinHTML5.css'
+        'bundles/admin/plugins/selectize/dist/css/selectize.css'
+        'bundles/admin/plugins/selectize/dist/css/selectize.bootstrap3.css'
+        'bundles/admin/plugins/select2-4.0.3/dist/css/select2.css'
+        'bundles/admin/plugins/iCheck/minimal/_all.css'
+        filter='cssrewrite' %}
+        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
+    {% endstylesheets %}
+    
+    <style>
+        .container-search-sidebar .container-colors {
+            display: inline-block;
+        }
+        .container-search-sidebar .container-colors .color {
+            border-radius: 21px;
+            width: 35px;
+            height: 35px;
+            padding: 6px 8px;
+            margin-right: 8px;
+            margin-bottom: 4px;
+            float: left;
+            border: 2px solid;
+        }
+        .container-search-sidebar .container-colors .no-bottom {
+            margin-bottom: 0px!important;
+        }
+    </style>
+{% endblock %}
+
+{% block container_content %}
+     
+
+    <div class="container core-container">
+        <div class="row product-list">
+            
+            <div class="col-md-3">
+            {% include 'CatalogueBundle:Catalogue:search.sidebar.html.twig'  %}
+            </div>
+            <div class="col-md-9 results">
+
+                 {% if category.image is defined and category.image != ''%}
+                 <img width="100%" src="/uploads/images/{{ category.image }}" />
+                 {% endif %}
+
+
+                    <div class="row order">
+                        <div class="col-md-6">
+
+                                 <div class="result-message">
+                                    {% if products | length > 0 and paginator is defined %} 
+                                        Se han encontrado {{ paginator.total }} resultados.
+                                    {% else %}
+                                        No se han encontrado resultados para su busqueda.
+                                    {% endif %}
+                                </div>
+
+                        </div>
+
+                        <div  class="col-md-6 col-xs-12 ordenarPor">
+                            <span>Ordenar por</span> 
+                            <select name="sort" id="sort" style="display: inline-block" class="selecOrden">
+                                <option value="">Selecciona una opción</option>
+                                {% if app.session.get('geolocated')%}<option value="0" selected="selected">Cercanos primero</option>{% endif %}
+                                <option value="1" {% if app.session.get('geolocated') == 0%}selected="selected"{% endif %}>Precios menores primero</option>
+                                <option value="2">Precios mayores primero </option>
+                                <option value="3">Destacados primero</option>
+                                <option value="4">Por orden alfabetico </option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="container-panel-product">
+                        {% for product in products %}
+                            {% include 'CatalogueBundle:Catalogue:panel.product.html.twig' with { 'multiple': 4 } %}
+                        {% endfor %}
+                    </div>
+                     <div style="clear: both"></div>
+
+                    <div class="pager">
+                        {% block pages %}
+                            {% if paginator.pages is defined and (paginator.pages | length > 0) %}
+                                {% include 'CoreBundle:Base:paginator.category.html.twig' %}
+                            {% endif %}
+                        {% endblock %}
+                    </div>
+
+             </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <!-- Ion Slider -->
+    <!-- Bootstrap slider -->
+    {% javascripts 
+        'bundles/admin/plugins/ionslider/ion.rangeSlider.min.js'    
+        'bundles/admin/plugins/typeahead/bootstrap3-typeahead.js'
+        'bundles/admin/plugins/selectize/dist/js/standalone/selectize.js'
+        'bundles/admin/plugins/selectize/dist/js/standalone/selectize.js'
+        'bundles/admin/plugins/select2-4.0.3/dist/js/select2.full.js'
+        'bundles/admin/plugins/iCheck/icheck.min.js'
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    <script>
+
+        $(document).ready(function (){
+            
+            
+            //iCheck for checkbox and radio inputs
+                $('input[type="checkbox"].minimal-trans, input[type="radio"].minimal-trans').iCheck({
+                  checkboxClass: 'icheckbox_minimal-trans',
+                  radioClass: 'iradio_minimal-trans'
+                });
+                
+            {% verbatim %}
+                
+                
+
+            $('input[name="search[city]"]').typeahead({ 
+                source: function (query, process) {
+                    $('glyphicon-refresh-animate').show();
+                    return $.get('/cities.json', { query: query }, function (data) {
+                        $('glyphicon-refresh-animate').hide();
+                        return process(data);
+                    });
+                },
+                updater: function(item){
+                    var lat = item.latitude;
+                    var lng = item.longitude;
+                    var name = item.name;
+                    var postalCode = item.postalCode;
+                    $('input[name="search[latitude]"]').val(lat);
+                    $('input[name="search[longitude]"]').val(lng);
+                    $('input[name="search[city]"]').val(name);
+                    $('input[name="search[cp]"]').val(postalCode);
+                }
+              });
+
+             $('input[name="search[cp]"]').typeahead({ 
+                source: function (query, process) {
+                    return $.get('/postalcodes.json', { query: query }, function (data) {
+                        return process(data);
+                    });
+                },
+                updater: function(item){
+                    //console.log(item);
+                    var lat = item.latitude;
+                    var lng = item.longitude;
+                    var city = item.city;
+                    var name = item.name;
+                    $('input[name="search[latitude]"]').val(lat);
+                    $('input[name="search[longitude]"]').val(lng);
+                    $('input[name="search[city]"]').val(city);
+                    $('input[name="search[cp]"]').val(name);
+                }
+              });
+
+            $('input[name="search[cp]"]').typeahead({
+                name: 'Codigos postales',
+                valueKey: 'name',
+                remote: {
+                    url: '/postalcodes.json?q=%QUERY',
+                    filter: function (parsedResponse) {
+                        // parsedResponse is the array returned from your backend
+                        //console.log(parsedResponse);
+
+                        // do whatever processing you need here
+                        return parsedResponse;
+                    }
+                },
+                updater: function(item) {
+                    var lat = item.latitude;
+                    var lng = item.longitude;
+                    $('#latitude').val(lat);
+                    $('#longitude').val(lng);
+                    return item;
+                }
+            });
+            {% endverbatim %}
+                    
+            from = $('#search_category_price_from').val();
+            to = $('#search_category_price_to').val();
+            $('.price-range').ionRangeSlider({
+                type: "double",
+                min: 0,
+                {% if category.id is defined and category.id== 3 %}max:100,{% else %}max: 500,{% endif %}
+                from: from,
+                {% if category.id is defined and category.id == 3 %}to: 50,{% else %}to: to,{% endif %}
+                {% if category.id is defined and category.id == 3 %}min_interval: 5,{% else %}min_interval: 20,{% endif %}
+                {% if category.id is defined and category.id == 3 %}postfix: '%',{% else %}postfix: '€',{% endif %}
+                onStart: function (data) {
+                    //console.log(data);
+                    //$('#search_category_price_from').val(data.from);
+                    //$('#search_category_price_to').val(data.to);
+                },
+                onChange: function (data) {
+                    $('#search_category_price_from').val(data.from);
+                    $('#search_category_price_to').val(data.to);
+                },
+                onFinish: function (data) {
+                    $('#search_category_price_from').val(data.from);
+                    $('#search_category_price_to').val(data.to);
+                },
+                onUpdate: function (data) {
+                    $('#search_category_price_from').val(data.from);
+                    $('#search_category_price_to').val(data.to);
+                }
+            });
+
+            
+            
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+                
+            function log (name, evt) {
+                if (!evt) {
+                  var args = "{}";
+                } else {
+                  var args = JSON.stringify(evt.params, function (key, value) {
+                    if (value && value.nodeName) return "[DOM node]";
+                    if (value instanceof $.Event) return "[$.Event]";
+                    return value;
+                  });
+                }
+                var $e = $("<li>" + name + " -> " + args + "</li>");
+                //$eventLog.append($e);
+                $e.animate({ opacity: 1 }, 10000, 'linear', function () {
+                  $e.animate({ opacity: 0 }, 2000, 'linear', function () {
+                    $e.remove();
+                  });
+                });
+              }
+              
+            //var $eventLog = $(".js-event-log");
+            //$("#search_category_brand").select2({ width: '200px' });
+            
+            /*var $eventSelect = $("#search_category_brand");
+            $eventSelect.on("select2:select", function (e) { log("select2:select", e ) });*/
+           
+            
+            $('#search_category_submit').click(function(){
+                $('.results').css('opacity', '0.3');
+            });
+           
+            
+            $('#sort').change(function(){
+                $('#search_category_sort').val($(this).val());
+                $('#search_category_submit').click();
+            });
+            
+            $('.more').click(function(){
+               var parent = $(this).parent(); 
+               var sort = parent.find('.sort');
+               
+                var chevron = $(this).find('.glyphicon');
+                if(chevron.hasClass('glyphicon-chevron-down')){
+                   chevron.removeClass('glyphicon-chevron-down');
+                   chevron.addClass('glyphicon-chevron-up');
+                }else{
+                   chevron.removeClass('glyphicon-chevron-up');
+                   chevron.addClass('glyphicon-chevron-down');
+                }
+               
+               if(sort.css('max-height') != '4000px'){
+                  sort.animate({
+                    maxHeight: "4000px"
+                  }, 1000, function() {
+                   
+                  });
+               }else{
+                  sort.animate({
+                    maxHeight: "259px"
+                  }, 500, function() {
+                    //console.log('complete');
+                  }); 
+               }
+               
+            });
+            
+            if(parseInt($('#search_category_sort').val()) > 0 ){
+                var val = parseInt($('#search_category_sort').val());
+                $('#sort option:eq('+(val+1)+')').prop('selected', true);
+            }
+           
+            //
+            $('#search_category_brand').select2({
+                placeholder: "{{ "brand.choose" | trans }}",
+                allowClear: true,
+                width: '100%'
+            });
+            $('#search_category_model').select2({
+                placeholder: "{{ "model.choose" | trans }}",
+                allowClear: true,
+                width: '100%'
+            });
+            var brand = $('#search_category_brand').val();
+            //console.log(brand);
+            var model = $('#search_category_model').val();
+            //console.log(model);
+            if(model != '' && brand != null){
+                $('.box.model').fadeIn('slow', function(){
+                     $('.box.model').addClass('active');
+                });
+            }else{
+                $('.box.model').hide();
+            }
+
+            $('#search_category_brand').change(function(){
+                var id = $('#search_category_brand').val();
+             
+                if(id != null){
+                    $.ajax({
+                        method: "GET",
+                        url: '{{path('catalogue_catalogue_modeljson' )}}/'+id,
+                    }).done(function (results) {
+                        console.log(results);
+                        var options = '';
+                        $.each( results, function( key, value ) {
+                             //console.log(value);
+                             options += "<option value="+ key + ">" + value + "</option>";
+                        });
+
+                        $('#search_category_model').html(options);
+                        $('#search_category_model').select2({
+                            placeholder: "{{ "model.choose" | trans }}",
+                            allowClear: true,
+                            width: '100%'
+                        });
+                        $('.box.model').fadeIn('slow');
+                    });
+                }
+            });
+            
+        });
+    </script>
+     
+     
+{% endblock %}
+

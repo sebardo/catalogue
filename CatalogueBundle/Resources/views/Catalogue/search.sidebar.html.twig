@@ -1,0 +1,93 @@
+{% form_theme form  'CatalogueBundle:Form:fields.html.twig' %}
+
+
+
+{{ form_start(form) }}
+<div class="container-search-sidebar">
+    <h3>         
+        {% if category.name is defined %}{{ category.name }}{% else %}Outlet{% endif %}
+    </h3>
+    
+    
+    {# ############################################################## #}
+    
+    {#<div>
+        <div class="sort box active">
+            <div  style="width: 59%;display: inline-block">
+                <div >
+                    <div class="title-search">Ciudad</div>
+                </div>
+                <div >
+                    {{ form_widget(form.city) }}
+                </div>
+            </div>
+            <div  style="width: 39%;display: inline-block">
+                <div >
+                    <div class="title-search">Cp</div>
+                </div>
+                <div >
+                    {{ form_widget(form.cp) }}
+                </div>
+            </div>
+            {{ form_widget(form.latitude) }}
+            {{ form_widget(form.longitude) }}
+        </div>
+    </div>#}
+
+    {% if category.subcategories is defined and category.subcategories | length > 0 %}
+    <div class="box active category-box">
+        <div class="title-search">
+            Subcategorías
+        </div>
+        <div class="checkbox-search">
+            {%- for child in form.category %}
+                    {{ form_widget(child, { type: 'category'} ) }}
+            {% endfor -%}
+        </div>
+    </div> 
+    {% endif %}
+
+    {% if brand is not defined %}
+    <div>
+        <div class="sort box active">
+            <div class="title-search">
+                Marcas
+            </div>
+            <div class="checkbox-search ">
+                {{ form_widget(form.brand) }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div>
+        <div class="sort box model">
+            <div class="title-search">
+                Modelo
+            </div>
+            <div class="checkbox-search ">
+                {{ form_widget(form.model) }}
+            </div>
+        </div>
+    </div>
+    {% include 'CatalogueBundle:Catalogue:search.feature.category.html.twig' %}
+
+
+
+    <div>
+        <div class="sort box price">
+            <div class="title-search">
+                Precio
+            </div>
+            <div class="">
+                <input type="text" class="price-range" value="" >
+                {{ form_widget(form.price_from) }}
+                {{ form_widget(form.price_to) }}
+            </div>
+        </div>
+    </div>
+
+    <input id="search_category_submit" type="submit" value="Buscar" class="btn btn-flat btn-optisoop-yellow btn-block">
+                
+        
+</div>
+{{ form_end(form) }}

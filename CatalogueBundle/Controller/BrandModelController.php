@@ -173,7 +173,7 @@ class BrandModelController extends Controller
         ;
     }
     
-    /**
+     /**
      * Returns a list of BrandModel entities in JSON format.
      *
      * @return JsonResponse
@@ -199,4 +199,5 @@ class BrandModelController extends Controller
         }
         return new JsonResponse($returnValues);
     }
+    
 }

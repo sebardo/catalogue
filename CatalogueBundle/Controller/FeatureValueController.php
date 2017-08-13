@@ -103,9 +103,12 @@ class FeatureValueController extends Controller
         $form = $this->createForm('CatalogueBundle\Form\FeatureValueType', $entity);
         $entity->setFeature($feature);
 
-        $form->bind($request);
+        $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+            $this->get('core_manager')->cleanImageForm($request->files->get('feature_value'), $entity);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();

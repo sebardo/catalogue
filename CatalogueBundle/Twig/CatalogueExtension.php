@@ -38,6 +38,7 @@ class CatalogueExtension extends \Twig_Extension
             new Twig_SimpleFunction('get_product_stats', array($this, 'getProductStats')),
             new Twig_SimpleFunction('get_product_image', array($this, 'getProductImage')),
             new Twig_SimpleFunction('get_input_color_style', array($this, 'getInputColorStyle')),
+            new Twig_SimpleFunction('get_catalogue_categories', array($this, 'getCatalogueCAtegories')),
 
         );
     }
@@ -56,7 +57,7 @@ class CatalogueExtension extends \Twig_Extension
     
     public function getProductImage($product, $size='400') {
         
-        if(method_exists($product, 'getProductImage') && count($product->getImages())>0){
+        if(method_exists($product, 'getImages') && count($product->getImages())>0){
             $imageEntity = $product->getImages()->first();
             $instance = new \CoreBundle\Twig\CoreExtension();
             $instance->setContainer($this->container);
@@ -137,6 +138,19 @@ class CatalogueExtension extends \Twig_Extension
             return $returnPath;
         }
         return $arr[0].'_'.$size.'.'.$arr[1];
+    }
+    
+    
+    /**
+    * Returns statistics from product
+    *
+    */
+    public function getCatalogueCategories()
+    {
+        $categories = $this->container->get('doctrine')->getManager()->getRepository('CatalogueBundle:Category')
+                ->findBy(array());
+        
+        return $categories;
     }
     
     /**

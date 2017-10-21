@@ -251,13 +251,14 @@ class LoadCatalogueData extends SqlScriptFixture
         //$product->setFinalShot(true);
         //$product->setTechnicalDetails('Technical details test.');
         @mkdir(__DIR__ . '/../../../../../../web/uploads/images/product/1');
+        @mkdir(__DIR__ . '/../../../../../../web/uploads/images/product/1/thumbnail');
         copy(__DIR__ . '/images/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7.jpeg', __DIR__ . '/../../../../../../web/uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7.jpeg');
-        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_142.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7_142.jpg');
-        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_260.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7_260.jpg');
-        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_380.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7_380.jpg');
-        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_400.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7_400.jpg');
+        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_142.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_142.jpg');
+        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_260.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_260.jpg');
+        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_380.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_380.jpg');
+        copy(__DIR__ . '/images/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_400.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/1/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd7_400.jpg');
         $image = new Image();
-        $image->setPath('uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7.jpeg');
+        $image->setPath('/uploads/images/product/1/nike-running-34d569540b8eb6dc872bb10d95f0efd7.jpeg');
         $product->addImage($image);
         
         
@@ -290,7 +291,7 @@ class LoadCatalogueData extends SqlScriptFixture
         copy(__DIR__ . '/images/2/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd2_380.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/2/nike-running-34d569540b8eb6dc872bb10d95f0efd2_380.jpg');
         copy(__DIR__ . '/images/2/thumbnail/nike-running-34d569540b8eb6dc872bb10d95f0efd2_400.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/2/nike-running-34d569540b8eb6dc872bb10d95f0efd2_400.jpg');
         $image2 = new Image();
-        $image2->setPath('uploads/images/product/2/nike-running-34d569540b8eb6dc872bb10d95f0efd2.jpeg');
+        $image2->setPath('/uploads/images/product/2/nike-running-34d569540b8eb6dc872bb10d95f0efd2.jpeg');
         $product2->addImage($image2);
         
 
@@ -322,7 +323,7 @@ class LoadCatalogueData extends SqlScriptFixture
         copy(__DIR__ . '/images/3/thumbnail/product-test-1-01867bee8967216c2bbfa972987c9417_380.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/3/product-test-1-01867bee8967216c2bbfa972987c9417_380.jpg');
         copy(__DIR__ . '/images/3/thumbnail/product-test-1-01867bee8967216c2bbfa972987c9417_400.jpg', __DIR__ . '/../../../../../../web/uploads/images/product/3/product-test-1-01867bee8967216c2bbfa972987c9417_400.jpg');
         $image3 = new Image();
-        $image3->setPath('uploads/images/product/3/product-test-1-01867bee8967216c2bbfa972987c9417.jpeg');
+        $image3->setPath('/uploads/images/product/3/product-test-1-01867bee8967216c2bbfa972987c9417.jpeg');
         $product3->addImage($image3);
         
         
